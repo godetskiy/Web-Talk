@@ -36,7 +36,7 @@ public class Registration extends HttpServlet {
             }
             if (find == true) {
                 //error: username уже занят
-                request.setAttribute("err", "Username уже занято");
+                request.setAttribute("err", "Username и имя пользователя уже заняты");
                 request.getRequestDispatcher("registration.jsp").forward(request, response);
                 return;
             } else {
