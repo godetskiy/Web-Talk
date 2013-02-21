@@ -10,15 +10,17 @@ import java.security.NoSuchAlgorithmException;
 
 public class User {
     public String username;
+    public String name;
     public String password;		//пароль пользователя в виде MD5
 
     User() {
         username = null;
         password = null;
+        name = null;
     }
 
-    User(String newLogin, String newPassword) {
-        this.setUser(newLogin, newPassword);
+    User(String newLogin, String newName, String newPassword) {
+        this.setUser(newLogin, newName, newPassword);
     }
 
     public static String createTableSQL() {
@@ -26,12 +28,13 @@ public class User {
                 "create table user(" +
                 "id_usr int auto_increment primary key, " +
                 "username varchar(50), " +
+                "name varchar(50), " +
                 "password varchar(50)" +
                 ");";
     }
 
     public String getSQL() {
-        return "insert into user (username, password) values('" + username +"', '" + password + "');";
+        return "insert into user (username, name, password) values('" + username +"', '" + name +"', '" + password + "');";
     }
 
     public static String getMD5(String str) {
@@ -49,17 +52,11 @@ public class User {
         return new String(theDigest);
     }
 
-    public boolean setUser(String newName, String newPassword) {
-        username = newName;
+    public boolean setUser(String newUsername, String newName, String newPassword) {
+        username = newUsername;
+        name = newName;
         password = this.getMD5(newPassword);
         return true;
-    }
-
-    public boolean isUser(String newName, String newPassword) {
-        String str = this.getMD5(newPassword);
-        if (username.equals(newName) && password.equals(str))
-            return true;
-        return false;
     }
 
     public String getUsername() {return username;}

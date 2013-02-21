@@ -13,10 +13,11 @@ import java.sql.SQLException;
  * Date: 21.02.13
  * Time: 1:02
  */
-public class Login extends HttpServlet {
+public class Registration extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = User.getMD5(request.getParameter("password"));
+        String name = request.getParameter("name");
         Database db = new Database();
         boolean find = false;   //found same user
         String msg = "";
@@ -27,32 +28,34 @@ public class Login extends HttpServlet {
             boolean res = rs.next();     //Result rs.next() operation
             while ((res == true) && (find == false)) {
                 String tbUsername = rs.getString("USERNAME");
-                String tbPassword = rs.getString("PASSWORD");
-                if (tbUsername.equals(username) && tbPassword.equals(password)) {
+                String tbName = rs.getString("NAME");
+                if (tbUsername.equals(username) && tbName.equals(name)) {
                     find = true;
                 }
                 res = rs.next();
             }
+            if (find == true) {
+                //error: username уже занят
+                request.setAttribute("err", "Username уже занято");
+                request.getRequestDispatcher("registration.jsp").forward(request, response);
+                return;
+            } else {
+                User newUser = new User(username, name, password);
+                db.executeSQL(newUser.getSQL());
+                response.sendRedirect("/");
+                return;
+            }
         } catch (SQLException e) {
             //error
             request.setAttribute("err", "Ошибка SQL");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("registration.jsp").forward(request, response);
             return;
         } catch (ClassNotFoundException e) {
             //error
             request.setAttribute("err", "Драйвер базы данных не найден");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("registration.jsp").forward(request, response);
             return;
         }
-        if (find == true) {
-            response.sendRedirect("/");
-            return;
-        } else {
-            request.setAttribute("err", "Неверное username или пароль");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

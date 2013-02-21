@@ -1,7 +1,32 @@
 @CHARSET "UTF-8";
-a {text-decoration: none;}
-a:link{color:black;}
-a:visited {color:black;}
+a {
+    text-decoration: none;
+    display: block;
+}
+a, a:visited, a:hover {
+    color: #333333;
+}
+
+div#logo, div#menu {
+    text-align: center;
+    width: 200px;
+    margin: auto;
+}
+
+div#menu ul {
+    padding: 0px;
+    margin: auto;
+}
+
+div#menu ul li {
+    margin-bottom: 5px;
+}
+div#menu ul li a:hover {
+    display: block;
+    background-color: #5488af;
+}
+
+
 
 ul.errorlist {
     padding-left: 5px;
