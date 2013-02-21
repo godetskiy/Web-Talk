@@ -15,6 +15,10 @@
         <servlet-name>Registration</servlet-name>
         <servlet-class>WebTalk.Registration</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>WebTalk.Logout</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/logged</url-pattern>
@@ -22,5 +26,9 @@
     <servlet-mapping>
         <servlet-name>Registration</servlet-name>
         <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 </web-app>

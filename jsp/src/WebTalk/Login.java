@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
  */
 public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id_usr = -1;
         String username = request.getParameter("username");
         String password = User.getMD5(request.getParameter("password"));
         Database db = new Database();
@@ -28,7 +30,9 @@ public class Login extends HttpServlet {
             while ((res == true) && (find == false)) {
                 String tbUsername = rs.getString("USERNAME");
                 String tbPassword = rs.getString("PASSWORD");
+                id_usr = rs.getInt("ID_USR");
                 if (tbUsername.equals(username) && tbPassword.equals(password)) {
+
                     find = true;
                 }
                 res = rs.next();
@@ -45,6 +49,11 @@ public class Login extends HttpServlet {
             return;
         }
         if (find == true) {
+            //Создание сесии пользователя
+            HttpSession hs = request.getSession(true);
+            hs.setAttribute("logged", true);
+            hs.setAttribute("username", username);
+            hs.setAttribute("id_usr", id_usr);
             response.sendRedirect("/");
             return;
         } else {
