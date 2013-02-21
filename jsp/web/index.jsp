@@ -36,8 +36,8 @@
         String htmlText = "";
         if (bLogged) {
             //Если вход выполнен
-            htmlText += "<div>Привет, " + stUsername + "</div><br><ul><li><a href='/box.jsp'>Все сообщения</a></li>" +
-                    "<li><a href='/message_form.jsp'>Новое сообщение</a></li>" +
+            htmlText += "<div>Привет, " + stUsername + "</div><br><ul><li><a href='/box'>Все сообщения</a></li>" +
+                    "<li><a href='/newmessage'>Новое сообщение</a></li>" +
                     "<li><a href='/logout'>Выход</a></li></ul>";
 
         } else {

@@ -19,6 +19,14 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>WebTalk.Logout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MsgCreate</servlet-name>
+        <servlet-class>WebTalk.MsgCreate</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Box</servlet-name>
+        <servlet-class>WebTalk.Box</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/logged</url-pattern>
@@ -30,5 +38,14 @@
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MsgCreate</servlet-name>
+        <url-pattern>/newmessage</url-pattern>
+        <url-pattern>/send</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Box</servlet-name>
+        <url-pattern>/box</url-pattern>
     </servlet-mapping>
 </web-app>

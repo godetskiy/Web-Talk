@@ -1,4 +1,7 @@
 @CHARSET "UTF-8";
+body {
+    background-color: #d3d3d3;
+}
 a {
     text-decoration: none;
     display: block;
@@ -7,10 +10,21 @@ a, a:visited, a:hover {
     color: #333333;
 }
 
-div#logo, div#menu {
-    text-align: center;
-    width: 200px;
+a#back {
+    text-decoration: underline;
+}
+
+div{
     margin: auto;
+}
+
+div#msg {
+    width: 300px;
+}
+
+div#logo, div#menu {
+    width: 200px;
+    text-align: center;
 }
 
 div#menu ul {
