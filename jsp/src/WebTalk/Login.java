@@ -16,38 +16,29 @@ import java.sql.SQLException;
  */
 public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id_usr = -1;
+        int id_usr = -1;    //id текущего пользователя
         String username = request.getParameter("username");
-        String password = User.getMD5(request.getParameter("password"));
-        String name = "";
-        Database db = new Database();
-        boolean find = false;   //found same user
-        String msg = "";
-        try {
-            db.createConnection();
-            String sql = "SELECT * FROM user;";
-            ResultSet rs = db.executeQuery(sql);
-            boolean res = rs.next();     //Result rs.next() operation
-            while ((res == true) && (find == false)) {
-                String tbUsername = rs.getString("USERNAME");
-                String tbPassword = rs.getString("PASSWORD");
-                id_usr = rs.getInt("ID_USR");
-                if (tbUsername.equals(username) && tbPassword.equals(password)) {
-                    name = rs.getString("NAME");
-                    find = true;
-                }
-                res = rs.next();
-            }
-        } catch (SQLException e) {
-            //error
-            request.setAttribute("err", "Ошибка SQL");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        } catch (ClassNotFoundException e) {
-            //error
+        String password = request.getParameter("password");
+        String name = "";       //Имя пользователя
+        boolean find = false;   //найдено совпадение username & password
+
+        User[] user = User.getUsersArray();
+
+        if (user == null) {
+            //Если не удалось соединиться
             request.setAttribute("err", "Драйвер базы данных не найден");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
+        }
+
+        for (int i = 0; (i < user.length) && (find == false); i++) {
+            if (user[i].getUsername().equals(username) &&
+                    user[i].getPassword().equals(password)) {
+                //Если совпадают
+                find = true;
+                name = user[i].getName();
+                id_usr = user[i].getUsr_id();
+            }
         }
         if (find == true) {
             //Создание сесии пользователя

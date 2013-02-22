@@ -6,7 +6,7 @@
     <title>Сообщение</title>
 </head>
 <body>
-<a href="/box">&lArr;Назад</a>
+<a href="/box"><h3>&lArr;Назад</h3></a>
 <table>
     <tr><td>От:</td> <td>${to}</td></tr>
     <tr><td>Тема:</td> <td>${subject}</td></tr>

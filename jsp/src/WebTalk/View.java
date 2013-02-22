@@ -23,16 +23,7 @@ public class View extends HttpServlet {
         HttpSession hs = request.getSession();
         int usr_id = Integer.valueOf(hs.getAttribute("id_usr").toString());
         Message msg = null;
-        try {
-            msg = Message.getMessageById(msg_id);
-        } catch (SQLException e) {
-            request.setAttribute("err", "Ошибка SQL");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
-            return;
-        } catch (ClassNotFoundException e) {
-            request.setAttribute("err", "Драйвер базы данных не найден");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
-        }
+        msg = Message.getMessageById(msg_id);
         request.setAttribute("to", User.getNameById(msg.getTo()));
         request.setAttribute("subject", msg.getSubject());
         request.setAttribute("text", msg.getText());

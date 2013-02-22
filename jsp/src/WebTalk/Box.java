@@ -19,50 +19,45 @@ public class Box extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Получение usr_id из сессии
         HttpSession hs = request.getSession();
         int usr_id = Integer.valueOf(hs.getAttribute("id_usr").toString());
         String usr_name = hs.getAttribute("name").toString();
-        String query = "SELECT * FROM MESSAGE WHERE IDFROM = " + usr_id + " OR IDTO = " + usr_id + " ORDER BY DATE DESC";
-        Database db = new Database();
-        String msgs = "<tr><td>Дата</td><td>Информация</td><td>Тема</td></tr>";
+        String htmlText = "<tr style='text-align: center'><td>Дата</td><td>Информация</td><td>Тема</td></tr>"; //html текст
+        Message message[] = Message.getMessagesArray(usr_id);
 
-        try {
-            db.createConnection();
-            ResultSet rs = db.executeQuery(query);
-            while (rs.next()) {
-                int msg_id = rs.getInt("ID_MSG");
-                Message tbMessage = new Message();
-                tbMessage.setMessage(rs.getInt("IDFROM"), rs.getInt("IDTO"), rs.getString("SUBJECT"),
-                        rs.getString("TEXT"), rs.getString("DATE"), rs.getBoolean("TYPE"), rs.getBoolean("READ"));
-                msgs += "<tr>";
+        if (message == null) {
+            request.setAttribute("err", "Внутренняя ошибка");
+            request.getRequestDispatcher("box.jsp").forward(request, response);
+            return;
+        }
+        if (message.length == 0) {
+            htmlText += "<tr><td colspan='3'>Сообщения отсутствуют</td></tr>";
+        } else {
+            for (int i = 0; i < message.length; i++) {
+                htmlText += "<tr>";
                 //1 часть. Дата
-                msgs += "<td>" + tbMessage.getDate() + "</td>";
+                htmlText += "<td>" + message[i].getDate() + "</td>";
                 //2 часть. Информация
-                msgs += "<td>";
-                if (tbMessage.getSender() == usr_id) {
+                htmlText += "<td>";
+                if (message[i].getSender() == usr_id) {
                     //Исходящее сообщение
-                    msgs += "Исходящее к " + usr_name + ".";
+                    htmlText += "Исходящее к " + usr_name + ".";
                 } else {
                     //Входящее сообщение
-                    String str = User.getNameById(tbMessage.getSender());
-                    msgs += "Входящее от " + str + ".";
+                    String str = User.getNameById(message[i].getSender());
+                    htmlText += "Входящее от " + str + ".";
                 }
-                msgs += "</td>";
+                htmlText += "</td>";
                 //3 часть. Тема
-                msgs += "<td>Тема: <a href='/view?msg_id=" + msg_id + "'> " + tbMessage.getSubject() + "</td>";
-                msgs += "</tr>";
+                htmlText += "<td><a href='/view?msg_id=" +
+                        message[i].getMsg_id() + "'> " + message[i].getSubject() + "</td></tr>";
             }
-        } catch (SQLException e) {
-            request.setAttribute("err", "Ошибка SQL");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
-            return;
-        } catch (ClassNotFoundException e) {
-            request.setAttribute("err", "Драйвер базы данных не найден");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
         }
         //Переход в ящик писем
-        request.setAttribute("msgs", msgs);
+        request.setAttribute("htmlText", htmlText);
         request.getRequestDispatcher("box.jsp").forward(request, response);
         return;
+
     }
 }

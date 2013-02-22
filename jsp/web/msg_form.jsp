@@ -31,7 +31,7 @@
     </script>
 </head>
 <body>
-<a href="/">&lArr;Назад</a>
+<a href="/"><h3>&lArr;Назад</h3></a>
     <div id="msg">
         <form id="fm" name="form" method="post" action="/send" onsubmit="return validate();">
         <table>

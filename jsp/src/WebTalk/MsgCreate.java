@@ -14,24 +14,28 @@ import javax.servlet.http.HttpSession;
  * Time: 16:46
  */
 public class MsgCreate extends HttpServlet {
-    private String getUsersList(int curr_id, int sel_id) throws SQLException, ClassNotFoundException {
-        Database db = new Database();
-        String htmlText = "";
-        db.createConnection();
-        String sql = "SELECT * FROM user;";
-        ResultSet rs = db.executeQuery(sql);
+
+    private String getUsersList(int curr_id, int sel_id) {
+        //curr_id - пользователь на исключение из списка
+        //sel_id - выделенный пользователь
+        String htmlText = "";   //результат
+        User[] user = User.getUsersArray();
+        if (user == null) {
+            //Не удалось считать из базы
+            return null;
+        }
         if (sel_id == -1)
             htmlText += "<option value='' SELECTED> Выберите получателя";
-        while (rs.next()) {
-            String tbUsername = rs.getString("USERNAME");
-            String tbName = rs.getString("NAME");
-            int id_usr = rs.getInt("ID_USR");
-            //Новое сообщение
-            if (curr_id != id_usr)  //Исключение пользователя из списка
-                if (curr_id == sel_id)
-                    htmlText += "<option value='" + id_usr + "' SELECTED> " + tbName + " (" + tbUsername + ")";
+
+        for (int i = 0; i < user.length; i++) {
+            int usr_id = user[i].getUsr_id();
+            if (curr_id != usr_id)      //Исключение пользователя из списка
+                if (curr_id == sel_id)  //Выделить пользователя в списке
+                    htmlText += "<option value='" + usr_id + "' SELECTED> " +
+                            user[i].getName() + " (" + user[i].getUsername() + ")";
                 else
-                    htmlText += "<option value='" + id_usr + "'> " + tbName + " (" + tbUsername + ")";
+                    htmlText += "<option value='" + usr_id + "'> " +
+                            user[i].getName() + " (" + user[i].getUsername() + ")";
         }
         return htmlText;
     }
@@ -49,22 +53,23 @@ public class MsgCreate extends HttpServlet {
         Message newMsg = new Message();
         newMsg.createNewMessage(idFrom, idTo, subject, text);
 
-        try {
-            //Запись значения в базу данных
-            Database db = new Database();
-            db.createConnection();
-            String sql = newMsg.getSQL();
-            db.executeSQL(sql);
-            response.sendRedirect("/box");
+        //Запись значения в базу данных
+        Database db = new Database();
+        if (!db.createConnection()) {
+            //Если не удалось соединиться
+            request.setAttribute("err", "Драйвер базы данных не найден");
+            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
             return;
-        } catch (SQLException e) {
+        }
+
+        if (!db.executeSQL(newMsg.getSQL())) {
             request.setAttribute("err", "Ошибка SQL");
             request.getRequestDispatcher("msg_form.jsp").forward(request, response);
             return;
-        } catch (ClassNotFoundException e) {
-            request.setAttribute("err", "Драйвер базы данных не найден");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
         }
+
+        response.sendRedirect("/box");
+        return;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,43 +78,40 @@ public class MsgCreate extends HttpServlet {
         //Получение usr_id из сессии
         HttpSession hs = request.getSession();
         int usr_id = Integer.valueOf(hs.getAttribute("id_usr").toString());
-
-        String options; //html текст для поля "кому"
-
+        String options;     //html текст для поля "кому"
         //Определение новое или предзаполненоe сообщение
-        int to_id = -1;
-        int msg_id;
-        String subject = "";
+        int msg_id = -1;    //id сообщения
+        Message msg = null; //Новое сообщение
+
         try {
-            msg_id = Integer.valueOf(request.getParameter("msg_id").toString());
+            msg_id = Integer.valueOf(request.getParameter("msg_id"));
         } catch (NullPointerException e) {
+            //Параметр не был передан (сообщение новое)
+            msg_id = -1;
+        } catch (NumberFormatException e) {
             msg_id = -1;
         }
 
-        //Получение текста для поля "Кому"
-        try {
-            if (msg_id == -1) {
-                //Новое сообщение
-                to_id = -1;
-            } else {
-                Message msg = Message.getMessageById(msg_id);
-                subject = "RE: " + msg.getSubject();
-                to_id = msg.getTo();
+
+        //Получение поля "Кому"
+        //try {
+        int to_id = -1;     //id получателя
+        if (msg_id == -1) {
+            //Новое сообщение
+            to_id = -1;
+        } else {
+            msg = Message.getMessageById(msg_id);
+            if (msg == null) {
+                request.setAttribute("err", "Внутренняя ошибка");
+                request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+                return;
             }
-            options = this.getUsersList(usr_id, to_id);
-        } catch (SQLException e) {
-            //error
-            request.setAttribute("err", "Ошибка SQL");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
-            return;
-        } catch (ClassNotFoundException e) {
-            //error
-            request.setAttribute("err", "Драйвер базы данных не найден");
-            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
-            return;
+            to_id = msg.getTo();
         }
+        options = this.getUsersList(usr_id, to_id);
         request.setAttribute("options", options);
-        request.setAttribute("subject", subject);
+        if (msg_id != -1)
+            request.setAttribute("subject", "RE: " + msg.getSubject());
         request.getRequestDispatcher("msg_form.jsp").forward(request, response);
         return;
     }

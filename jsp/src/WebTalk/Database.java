@@ -20,19 +20,37 @@ public class Database {
         st = null;
     }
 
-    public void createConnection() throws SQLException, ClassNotFoundException{
-        Class.forName(JDBC_DRIVER);
-        connection = DriverManager.getConnection(JDBC_URL,JDBC_USER, JDBC_PASSWORD);
+    public boolean createConnection(){
+        try {
+            Class.forName(JDBC_DRIVER);
+            connection = DriverManager.getConnection(JDBC_URL,JDBC_USER, JDBC_PASSWORD);
+        } catch (SQLException e) {
+            return false;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
-    public void executeSQL(String sql) throws SQLException{
-        st = connection.createStatement();
-        st.execute(sql);
+    public boolean executeSQL(String sql){
+        try {
+            st = connection.createStatement();
+            st.execute(sql);
+        } catch (SQLException e) {
+            return false;
+        }
+        return true;
     }
 
-    public ResultSet executeQuery(String query) throws SQLException{
-        st = connection.createStatement();
-        return st.executeQuery(query);
+    public ResultSet executeQuery(String query){
+        ResultSet rs = null;
+        try {
+            st = connection.createStatement();
+            rs = st.executeQuery(query);
+        } catch (SQLException e) {
+            return null;
+        }
+        return rs;
     }
 
 
@@ -40,38 +58,4 @@ public class Database {
         if (connection != null) connection.close();
         if (st != null) st.close();
     }
-	/*public static void main(String[] args) {
-		try {
-
-			Class.forName("org.h2.Driver");
-	        Connection conn = DriverManager.
-	            getConnection("jdbc:h2:~/test", "sa", "");
-	        // add application code here
-	        conn.close();
-
-			Class.forName("org.h2.Driver").newInstance();
-			Connection conn = DriverManager.getConnection("jdbc:h2:test",
-			"sa", "");
-			Statement st = null;
-			st = conn.createStatement();
-			st.execute("INSERT INTO TEST VALUES(default,'HELLO')");
-			st.execute("INSERT INTO TEST(NAME) VALUES('JOHN')");
-			String name1 = "Jack";
-			String q = "insert into TEST(name) values(?)";
-			PreparedStatement st1 = null;
-
-			st1 = conn.prepareStatement(q);
-			st1.setString(1, name1);
-			st1.execute();
-
-			ResultSet result;
-			result = st.executeQuery("SELECT * FROM TEST");
-			while (result.next()) {
-			String name = result.getString("NAME");
-			System.out.println(result.getString("ID")+" "+name);
-			}
-			} catch (Exception e) {
-			e.printStackTrace();
-			}
-	}*/
 }
