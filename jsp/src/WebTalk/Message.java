@@ -29,7 +29,7 @@ public class Message {
     }
 
     public static String createTableSQL() {
-        return  "drop table if exists message; " +
+        return  //"drop table if exists message; " +
                 "create table message(" +
                 "id_msg int auto_increment, " +
                 "idfrom int,  " +
@@ -48,11 +48,6 @@ public class Message {
                 String.valueOf(idFrom) + ", " + String.valueOf(idTo) + ", '" +
                 subject + "', '" + text + "', '" + date + "');";
     }
-
-    /*public static Message[] getMessages(Database db) throws SQLException, ClassNotFoundException{
-        db.createConnection();
-
-    } */
 
     //Получение сообщения по его id
     public static Message getMessageById(int msg_id){

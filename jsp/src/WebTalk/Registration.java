@@ -1,5 +1,6 @@
 package WebTalk;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,19 @@ import java.sql.SQLException;
  * Time: 1:02
  */
 public class Registration extends HttpServlet {
+    public void init(ServletConfig sc){
+        try {
+            super.init(sc);
+            Database db = new Database();
+            if (db.createConnection()) {
+                db.executeSQL(User.createTableSQL());
+                db.executeSQL(Message.createTableSQL());
+            }
+        } catch (ServletException e) {
+        }
+
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id_usr = -1;    //id текущего пользователя
         //Параметры из POST
@@ -26,7 +40,7 @@ public class Registration extends HttpServlet {
 
         if (user == null) {
             //Если не удалось соединиться
-            request.setAttribute("err", "Драйвер базы данных не найден");
+            request.setAttribute("err", "Ошибка соединения с базой");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }

@@ -57,7 +57,7 @@ public class MsgCreate extends HttpServlet {
         Database db = new Database();
         if (!db.createConnection()) {
             //Если не удалось соединиться
-            request.setAttribute("err", "Драйвер базы данных не найден");
+            request.setAttribute("err", "Ошибка соединения с базой");
             request.getRequestDispatcher("msg_form.jsp").forward(request, response);
             return;
         }

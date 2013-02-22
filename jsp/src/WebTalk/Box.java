@@ -27,11 +27,6 @@ public class Box extends HttpServlet {
         Message message[] = Message.getMessagesArray(usr_id);
 
         if (message == null) {
-            request.setAttribute("err", "Внутренняя ошибка");
-            request.getRequestDispatcher("box.jsp").forward(request, response);
-            return;
-        }
-        if (message.length == 0) {
             htmlText += "<tr><td colspan='3'>Сообщения отсутствуют</td></tr>";
         } else {
             for (int i = 0; i < message.length; i++) {
@@ -42,7 +37,8 @@ public class Box extends HttpServlet {
                 htmlText += "<td>";
                 if (message[i].getSender() == usr_id) {
                     //Исходящее сообщение
-                    htmlText += "Исходящее к " + usr_name + ".";
+                    String str = User.getNameById(message[i].getTo());
+                    htmlText += "Исходящее к " + str + ".";
                 } else {
                     //Входящее сообщение
                     String str = User.getNameById(message[i].getSender());

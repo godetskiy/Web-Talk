@@ -8,7 +8,7 @@ import java.sql.*;
  */
 public class Database {
     public static final String JDBC_DRIVER = "org.h2.Driver";
-    public static final String JDBC_URL = "jdbc:h2:tcp://localhost/~/test";
+    public static final String JDBC_URL = "jdbc:h2:tcp://localhost/test";
     public static final String JDBC_USER = "sa";
     public static final String JDBC_PASSWORD = "";
 

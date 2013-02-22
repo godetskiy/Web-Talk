@@ -28,7 +28,7 @@ public class User {
     }
 
     public static String createTableSQL() {
-        return "drop table if exists user; " +
+        return //"drop table if exists user; " +
                 "create table user(" +
                 "id_usr int auto_increment primary key, " +
                 "username varchar(50), " +
