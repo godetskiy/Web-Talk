@@ -8,7 +8,7 @@
 <body>
 <a href="/">&lArr;Назад</a>
 <table border="1px solid red">
-    ${msgs}
+        ${msgs}
 </table>
 </body>
 </html>

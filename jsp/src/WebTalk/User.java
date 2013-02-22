@@ -2,6 +2,9 @@ package WebTalk;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * User: alex
  * Date: 21.02.13
@@ -35,6 +38,24 @@ public class User {
 
     public String getSQL() {
         return "insert into user (username, name, password) values('" + username +"', '" + name +"', '" + password + "');";
+    }
+
+    public static String getNameById(int usr_id) {
+        String query_txt = "SELECT * FROM USER WHERE ID_USR = " + usr_id +";";
+        String name = "";
+        try {
+            Database db = new Database();
+            db.createConnection();
+            ResultSet rs = db.executeQuery(query_txt);
+            if (rs.next()) {
+                name = rs.getString("NAME");
+            }
+        } catch (SQLException e) {
+            name = null;
+        } catch (ClassNotFoundException e) {
+            name = null;
+        }
+        return name;
     }
 
     public static String getMD5(String str) {

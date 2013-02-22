@@ -27,6 +27,10 @@
         <servlet-name>Box</servlet-name>
         <servlet-class>WebTalk.Box</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>View</servlet-name>
+        <servlet-class>WebTalk.View</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/logged</url-pattern>
@@ -41,11 +45,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MsgCreate</servlet-name>
-        <url-pattern>/newmessage</url-pattern>
+        <url-pattern>/message</url-pattern>
         <url-pattern>/send</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Box</servlet-name>
         <url-pattern>/box</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>View</servlet-name>
+        <url-pattern>/view</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -10,6 +10,10 @@ a, a:visited, a:hover {
     color: #333333;
 }
 
+tr#sel td {
+    font-weight: bold;
+}
+
 a#back {
     text-decoration: underline;
 }

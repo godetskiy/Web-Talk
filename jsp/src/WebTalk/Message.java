@@ -1,4 +1,5 @@
 package WebTalk;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -22,11 +23,11 @@ public class Message {
     }
 
     Message(int from, int to, String newSubject, String newText, boolean newType) {
-        this.setMessage(from, to, newSubject, newText, newType, false);
+        this.setMessage(from, to, newSubject, newText, this.createDate(), newType, false);
     }
 
     public void createNewMessage(int from, int to, String newSubject, String newText) {
-        this.setMessage(from, to, newSubject, newText, false, false);
+        this.setMessage(from, to, newSubject, newText, this.createDate(), false, false);
     }
 
     public static String createTableSQL() {
@@ -59,15 +60,32 @@ public class Message {
 
     } */
 
-    public void setMessage(int from, int to, String newSubject, String newText, boolean newType, boolean isRead) {
+    public static Message createMessageFromResultSet(ResultSet rs) throws SQLException{
+        Message newMessage = new Message();
+        newMessage.setMessage(rs.getInt("IDFROM"), rs.getInt("IDTO"), rs.getString("SUBJECT"),
+                rs.getString("TEXT"), rs.getString("DATE"), rs.getBoolean("TYPE"), rs.getBoolean("READ"));
+        return newMessage;
+    }
+
+    public static Message getMessageById(int msg_id)  throws SQLException, ClassNotFoundException {
+        Database db = new Database();
+        db.createConnection();
+        String query_txt = "SELECT * FROM MESSAGE WHERE ID_MSG = " + msg_id + ";";
+        ResultSet rs = db.executeQuery(query_txt);
+        rs.next();
+        return createMessageFromResultSet(rs);
+    }
+
+    private String createDate() {
+        return (new SimpleDateFormat()).format(new Date());
+    }
+
+    public void setMessage(int from, int to, String newSubject, String newText, String newDate, boolean newType, boolean isRead) {
         idFrom = from;
         idTo = to;
         subject = new String(newSubject);
         text = new String(newText);
-
-        //Редактирование даты
-        date = (new SimpleDateFormat()).format(new Date());
-
+        date = newDate;
         type = newType;
         read = isRead;
     }
@@ -79,6 +97,7 @@ public class Message {
     public int getTo() {return idTo;}
     public String getSubject() {return subject;}
     public String getText() {return text;}
+    public String getDate() {return date;}
     public boolean isIncoming() {return type;}
     public boolean isRead() {return read;}
 

@@ -19,6 +19,7 @@ public class Login extends HttpServlet {
         int id_usr = -1;
         String username = request.getParameter("username");
         String password = User.getMD5(request.getParameter("password"));
+        String name = "";
         Database db = new Database();
         boolean find = false;   //found same user
         String msg = "";
@@ -32,7 +33,7 @@ public class Login extends HttpServlet {
                 String tbPassword = rs.getString("PASSWORD");
                 id_usr = rs.getInt("ID_USR");
                 if (tbUsername.equals(username) && tbPassword.equals(password)) {
-
+                    name = rs.getString("NAME");
                     find = true;
                 }
                 res = rs.next();
@@ -53,6 +54,7 @@ public class Login extends HttpServlet {
             HttpSession hs = request.getSession(true);
             hs.setAttribute("logged", true);
             hs.setAttribute("username", username);
+            hs.setAttribute("name", name);
             hs.setAttribute("id_usr", id_usr);
             response.sendRedirect("/");
             return;
