@@ -1,1 +1,11 @@
+#Java
 *.class
+
+#Intellij IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+
+#Maven
+target/
