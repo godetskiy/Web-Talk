@@ -41,7 +41,7 @@ public class Registration extends HttpServlet {
         if (user == null) {
             //Если не удалось соединиться
             request.setAttribute("err", "Ошибка соединения с базой");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("registration.jsp").forward(request, response);
             return;
         }
 
@@ -64,7 +64,7 @@ public class Registration extends HttpServlet {
             if (!newUser.save()) {
                 //Ошибка записи
                 request.setAttribute("err", "Ошибка SQL");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("registration.jsp").forward(request, response);
                 return;
             }
 

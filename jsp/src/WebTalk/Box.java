@@ -22,7 +22,7 @@ public class Box extends HttpServlet {
         //Получение usr_id из сессии
         HttpSession hs = request.getSession();
         int usr_id = Integer.valueOf(hs.getAttribute("id_usr").toString());
-        String usr_name = hs.getAttribute("name").toString();
+        //String usr_name = hs.getAttribute("name").toString();
         String htmlText = "<tr style='text-align: center'><td>Дата</td><td>Информация</td><td>Тема</td></tr>"; //html текст
         Message message[] = Message.getMessagesArray(usr_id);
 

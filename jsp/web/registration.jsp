@@ -62,7 +62,7 @@
             </tr>
             <tr align="center" >
                 <td colspan="2"><input type="submit" value="Регистрация" >
-                    <input type="button" value="Назад" onclick="history.back()"></td>
+                    <input type="button" value="Назад" onclick="location.href='/'"></td>
             </tr>
         </table>
     </center>
