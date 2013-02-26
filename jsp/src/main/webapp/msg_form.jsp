@@ -1,3 +1,4 @@
+<%@ page import="WebTalk.User"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -47,9 +48,40 @@
                 <td>Кому: </td>
                 <td>
                     <select name='to' size='1'>
-                    <%! String options = ""; %>
-                    <% options = request.getAttribute("options").toString(); %>
-                    <%= options%>
+                    <%!
+                        User user[] = null;
+                        int usr_id = -1;
+                        int sel_id = -1;
+                        String htmlText = "";
+                    %>
+                    <%
+                        try {
+                            user = (User[]) request.getAttribute("users");
+
+                            HttpSession hs = request.getSession();
+                            User tmpUser = (User) hs.getAttribute("user");
+                            usr_id = tmpUser.getUsr_id();
+
+                            sel_id = Integer.valueOf(request.getAttribute("sel_id").toString());
+                        } catch (NullPointerException e) {
+
+                        }
+                        if (sel_id == -1) //Новое сообщение выбран пункт по умолчанию
+                            htmlText += "<option value='' SELECTED> Выберите получателя";
+                        if (user != null) {
+                            for (int i = 0; i < user.length; i++) {
+                                int curr_id = user[i].getUsr_id();
+                                if (curr_id != usr_id)      //Исключение пользователя из списка
+                                    if (curr_id == sel_id)  //Выделить пользователя в списке
+                                        htmlText += "<option value='" + user[i].getUsr_id() + "' SELECTED> " +
+                                                user[i].getName() + " (" + user[i].getUsername() + ")";
+                                    else
+                                        htmlText += "<option value='" + user[i].getUsr_id() + "'> " +
+                                                user[i].getName() + " (" + user[i].getUsername() + ")";
+                            }
+                        }
+                    %>
+                    <%= htmlText%>
                     </select>
                 </td>
             </tr>

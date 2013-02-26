@@ -3,6 +3,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+
 
 public class Message {
     private int msg_id;
@@ -29,9 +33,9 @@ public class Message {
         this.setMessage(from, to, newSubject, newText, newDate);
     }
 
-    public void createNewMessage(int from, int to, String newSubject, String newText) {
+    /*public void createNewMessage(int from, int to, String newSubject, String newText) {
         this.setMessage(from, to, newSubject, newText, this.createDate());
-    }
+    } */
 
     public static String createTableSQL() {
         return  //"drop table if exists message; " +
@@ -54,6 +58,32 @@ public class Message {
                 subject + "', '" + text + "', '" + date + "');";
     }
 
+    public boolean save() {
+        Database db = new Database();
+        boolean result = false;
+        if (!db.createConnection()) {
+            result = false;
+        } else {
+            Connection conn = db.getConnection();
+            String sql_str = "INSERT INTO message(idfrom, idto, subject, text, date) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+            try {
+                PreparedStatement ps = conn.prepareStatement(sql_str);
+                ps.setInt(1, idFrom);
+                ps.setInt(2, idTo);
+                ps.setString(3, subject);
+                ps.setString(4, text);
+                ps.setString(5, date);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result = false;
+            }
+            result = true;
+        }
+        return result;
+    }
+
     //Получение сообщения по его id
     public static Message getMessageById(int msg_id){
         Database db = new Database();
@@ -73,7 +103,7 @@ public class Message {
         return newMessage;
     }
 
-    //Получение массива сообщений для заданного пользователя
+   /* //Получение массива сообщений для заданного пользователя
     public static Message[] getMessagesArray(int usr_id) {
         Message result[] = new Message[0];       //Результат
         int count = 0;              //Кол-во в результате
@@ -109,7 +139,7 @@ public class Message {
             return null;
         }
         return result;
-    }
+    } */
 
     private String createDate() {
         return (new SimpleDateFormat()).format(new Date());

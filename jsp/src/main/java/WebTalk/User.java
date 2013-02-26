@@ -24,6 +24,12 @@ public class User {
         this.setUser(newLogin, newName, newPassword);
     }
 
+    User(int newId, String newLogin, String newName) {
+        usr_id = newId;
+        username = newLogin;
+        name = newName;
+    }
+
     User(boolean newLogged, int newId, String newUsername, String newName) {
         logged = newLogged;
         usr_id = newId;

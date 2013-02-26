@@ -25,7 +25,15 @@ public class urls extends HttpServlet {
             case "/box":
                 Box.getMessagesArray(request, response);
                 break;
-
+            case "/message":
+                Box.createNewMessage(request, response);
+                break;
+            case "/view":
+                Box.viewMessage(request, response);
+                break;
+            case "/send":
+                Box.send(request, response);
+                break;
             default:
                 response.sendRedirect("/");
                 break;

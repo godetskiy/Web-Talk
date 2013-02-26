@@ -18,16 +18,16 @@ public class Box{
         return ps.executeQuery();
     }
 
+
     public static void getMessagesArray(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Получение usr_id из сессии
-        HttpSession hs = request.getSession();
-        String strId = (String) hs.getAttribute("id_usr");
-        if (strId == null) {
+        int usr_id = Authentication.fetchUserId(request);
+
+        if (usr_id == -1) {
             request.setAttribute("error", "Авторизация отсутствует");
             request.getRequestDispatcher("box.jsp").forward(request, response);
             return;
         }
-        int usr_id = Integer.valueOf(strId);
 
         //Получение списка сообщение
         int count = 0;
@@ -67,11 +67,93 @@ public class Box{
         return;
     }
 
-    public static void createNewMessage() {
+    private static User[] getUsersArray() {
+        Database db = new Database();
+        ResultSet rs = null;            //Результат запроса
+        int count = 0;                  //Кол-во возвращаемых объектов
+        User[] result = new User[count];           //Возвращаемый результат
 
+        if (!db.createConnection()) {
+
+        } else {
+            try {
+                Connection conn = db.getConnection();
+                String query_str = "";
+                PreparedStatement ps = null;
+
+                //Кол-во пользователей в таблице
+                query_str = "SELECT count(*) AS count FROM user";
+                ps = conn.prepareStatement(query_str);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("COUNT");
+                }
+
+                //Получение данных
+                result = new User[count];
+                query_str = "SELECT * FROM user";
+                ps = conn.prepareStatement(query_str);
+                rs = ps.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+                    result[i] = new User(rs.getInt("ID_USR"), rs.getString("USERNAME"), rs.getString("NAME"));
+                    i++;
+                }
+            } catch (SQLException e) {
+
+            }
+            //Закрытие базы данных
+        }
+        return result;
     }
 
-    public static void viewMessage() {
+    public static void createNewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("users", Box.getUsersArray());
+        request.setAttribute("sel_id", -1);
+        request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+    }
 
+    public static void viewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Получение данных msg_id
+
+        request.setAttribute("users", Box.getUsersArray());
+        //request.setAttribute("sel_id", sel_id);
+        request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+    }
+
+    public static void send(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Отправка нового сообщения
+        //Получение данных
+        String subject = request.getParameter("subject");
+        String text = request.getParameter("msg");
+        int idFrom = -1;
+        int idTo = -1;
+        HttpSession hs = request.getSession();
+        try {
+            User tmpUser = (User) hs.getAttribute("user");
+            idFrom = tmpUser.getUsr_id();
+            idTo = Integer.valueOf(request.getParameter("to"));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        if ((idFrom == -1) || (idTo == -1)) {
+            //Если не инициализировались поля
+            request.setAttribute("err", "Ошибка передачи параметров");
+            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+            return;
+        }
+
+        //Запись соообщения в БД
+        Message newMsg = new Message(idFrom, idTo, subject, text);
+        if (!newMsg.save()) {
+            //Ошибка записи в БД
+            request.setAttribute("err", "Ошибка записи в базу данных");
+            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+            return;
+        }
+
+        response.sendRedirect("/box");
+        return;
     }
 }

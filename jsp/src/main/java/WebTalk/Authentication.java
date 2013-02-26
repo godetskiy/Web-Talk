@@ -11,6 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Authentication {
+    public static int fetchUserId(HttpServletRequest request) {
+        HttpSession hs = request.getSession();
+        User tmpUser = (User) hs.getAttribute("user");
+        if (tmpUser != null) return tmpUser.getUsr_id();
+            else return -1;
+    }
+
     private static User find(String query_str, String param1, String param2) {
         Database db = new Database();
         User result = null;
@@ -63,6 +70,7 @@ public class Authentication {
     public static void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession hs = request.getSession();
         hs.invalidate();
+        response.reset();
         response.sendRedirect("/");
         return;
     }

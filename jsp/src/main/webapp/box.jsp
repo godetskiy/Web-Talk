@@ -19,37 +19,38 @@
     %>
     <%
         try {
+            message = (Message[]) request.getAttribute("messages");
             HttpSession hs = request.getSession();
-            message = (Message[]) hs.getAttribute("messages");
             User tmpUser = (User) hs.getAttribute("user");
             usr_id = tmpUser.getUsr_id();
         } catch (NullPointerException e) {
-
-        } finally {
-            if (message == null) {
-                //Если сообщений нет
-                htmlText = "<tr style='text-align: center'><td colspan='3'>Сообщений нет</td></tr>";
-            } else {
-                htmlText += "<tr>";
-                for (int i = 0; i < message.length; i++) {
-                    //1 столбец
-                    htmlText += "<td>${message[i].getDate}</tr>";
-                    //2 столбец
-                    if (message[i].getSender() == usr_id) {
-                        //Исходящее сообщение
-                        String str = User.getNameById(message[i].getTo());
-                        htmlText += "Исходящее к " + str + ".";
-                    } else {
-                        //Входящее сообщение
-                        String str = User.getNameById(message[i].getSender());
-                        htmlText += "Входящее от " + str + ".";
-                    }
-                    //3 столбец
-                    htmlText += "<td><a href='/view?msg_id=" +
-                            message[i].getMsg_id() + "'> " + message[i].getSubject() + "</td></tr>";
+          e.printStackTrace();
+        }
+        if (message == null) {
+            //Если сообщений нет
+            htmlText = "<tr style='text-align: center'><td colspan='3'>Сообщений нет</td></tr>";
+        } else {
+            htmlText += "<tr>";
+            for (int i = 0; i < message.length; i++) {
+                //1 столбец
+                htmlText += "<td>" + message[i].getDate() + "</td>";
+                //2 столбец
+                htmlText += "<td>";
+                if (message[i].getSender() == usr_id) {
+                    //Исходящее сообщение
+                    String str = User.getNameById(message[i].getTo());
+                    htmlText += "Исходящее к " + str + ".";
+                } else {
+                    //Входящее сообщение
+                    String str = User.getNameById(message[i].getSender());
+                    htmlText += "Входящее от " + str + ".";
                 }
-                htmlText += "</tr>";
+                htmlText += "</td>";
+                //3 столбец
+                htmlText += "<td><a href='/view?msg_id=" +
+                        message[i].getMsg_id() + "'> " + message[i].getSubject() + "</td></tr>";
             }
+            htmlText += "</tr>";
         }
 
     %>

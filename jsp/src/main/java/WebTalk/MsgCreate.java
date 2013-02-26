@@ -36,7 +36,7 @@ public class MsgCreate{
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Отправка нового сообщения
+        /*//Отправка нового сообщения
         //Получение данных
         HttpSession hs = request.getSession();
         int idFrom = Integer.valueOf(hs.getAttribute("id_usr").toString());
@@ -64,7 +64,7 @@ public class MsgCreate{
         }
 
         response.sendRedirect("/box");
-        return;
+        return;     */
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
