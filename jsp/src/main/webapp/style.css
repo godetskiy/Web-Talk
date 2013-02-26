@@ -1,0 +1,56 @@
+@CHARSET "UTF-8";
+body {
+    background-color: #d3d3d3;
+}
+a {
+    text-decoration: none;
+    display: block;
+}
+a, a:visited, a:hover {
+    color: #333333;
+}
+
+tr#sel td {
+    font-weight: bold;
+}
+
+a#back {
+    text-decoration: underline;
+}
+
+div{
+    margin: auto;
+}
+
+div#msg {
+    width: 300px;
+}
+
+div#logo, div#menu {
+    width: 200px;
+    text-align: center;
+}
+
+div#menu ul {
+    padding: 0px;
+    margin: auto;
+}
+
+div#menu ul li {
+    margin-bottom: 5px;
+}
+div#menu ul li a:hover {
+    display: block;
+    background-color: #5488af;
+}
+
+
+
+ul.errorlist {
+    padding-left: 5px;
+}
+
+li {
+    list-style-type: none;
+    color: #b81900;
+}
