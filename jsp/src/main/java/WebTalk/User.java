@@ -130,5 +130,5 @@ public class User {
     private void setUsr_id(int newUsrId) {usr_id = newUsrId;}
     public String getName() {return name;}
     public boolean isLogged() {return logged;}
-
+    public void setLogged() {logged = true;}
 }

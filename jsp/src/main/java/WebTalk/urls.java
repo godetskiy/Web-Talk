@@ -10,19 +10,22 @@ public class urls extends HttpServlet {
 
     private void manageUrls(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uri = request.getRequestURI();
-
+        //System.out.println(uri);
         switch (uri) {
             //Home page
-            case "/":
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-                break;
             case "/login":
                 Authentication.login(request, response);
-
                 break;
             case "/logout":
                 Authentication.logout(request, response);
                 break;
+            case "/registration":
+                Authentication.registration(request, response);
+                break;
+            case "/box":
+                Box.getMessagesArray(request, response);
+                break;
+
             default:
                 response.sendRedirect("/");
                 break;

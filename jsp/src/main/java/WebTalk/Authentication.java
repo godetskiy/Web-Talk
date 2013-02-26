@@ -11,49 +11,87 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Authentication {
-    public static void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User tmpUser = new User();
-        boolean find = false;   //найдено совпадение username & password
+    private static User find(String query_str, String param1, String param2) {
         Database db = new Database();
-
+        User result = null;
         if (!db.createConnection()) {
 
         } else {
             Connection con = db.getConnection();
-            String query_txt = "SELECT * FROM user WHERE username  = ? AND password = ?";
             try {
-                PreparedStatement ps = con.prepareStatement(query_txt);
-                ps.setString(1, request.getParameter("username"));
-                ps.setString(2, request.getParameter("password"));
+                PreparedStatement ps = con.prepareStatement(query_str);
+                ps.setString(1, param1);
+                ps.setString(2, param2);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    tmpUser = new User(true, rs.getInt("ID_USR"),
+                    result = new User(true, rs.getInt("ID_USR"),
                             rs.getString("USERNAME"),
                             rs.getString("NAME"));
-                    find = true;
                 }
             } catch (SQLException e) {
 
             }
             //Закрытие соединения с базой
         }
-        if (find) {
+        return result;
+    }
+
+    private static void createUserSession(HttpServletRequest request, User user) {
+        HttpSession hs = request.getSession(true);
+        hs.setAttribute("user", user);
+    }
+
+    public static void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String query_txt = "SELECT * FROM user WHERE username  = ? AND password = ?";
+
+        User tmpUser = Authentication.find(query_txt, username, password);
+
+        if (tmpUser != null) {
             //Создание сесии пользователя
-            HttpSession hs = request.getSession(true);
-            hs.setAttribute("user", tmpUser);
+            Authentication.createUserSession(request, tmpUser);
+
             response.sendRedirect("/");
-            return;
         } else {
             request.setAttribute("err", "Неверное username или пароль");
             request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
         }
+        return;
     }
 
     public static void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession hs = request.getSession();
         hs.invalidate();
         response.sendRedirect("/");
+        return;
+    }
+
+    public static void registration(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String name = request.getParameter("name");
+        String password = request.getParameter("password");
+        String query_txt = "SELECT * FROM user WHERE username  = ? AND name = ?";
+
+        User tmpUser = Authentication.find(query_txt, username, name);
+
+        if (tmpUser == null) {
+            tmpUser = new User(username, name, password);
+            if (tmpUser.save()) {
+                tmpUser = Authentication.find(query_txt, username, name);
+                tmpUser.setLogged();
+
+                //Создание сесии пользователя
+                Authentication.createUserSession(request, tmpUser);
+                response.sendRedirect("/");
+            } else {
+                request.setAttribute("err", "Ошибка записи в базу данных");
+                request.getRequestDispatcher("registration.jsp").forward(request, response);
+            }
+        } else {
+            request.setAttribute("err", "Username и имя пользователя уже заняты");
+            request.getRequestDispatcher("registration.jsp").forward(request, response);
+        }
         return;
     }
 }

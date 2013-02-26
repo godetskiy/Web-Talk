@@ -2,10 +2,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
-<%
-    String name = request.getParameter( "username" );
-    session.setAttribute( "theName", name );
-%>
 <html>
 
 <head>
@@ -22,8 +18,6 @@
 <%!
     User user = null;
     String htmlText = "";
-    /*boolean bLogged = false;
-    String stUsername = "";*/
 %>
 <%
     try {
@@ -46,22 +40,6 @@
     }
 
 %>
-<!--
-    String createMenu() {
-        String htmlText = "";
-        if (user.isLogged()) {
-            //Если вход выполнен
-            htmlText += "<div>Привет, " + user.getName() + "</div><br><ul><li><a href='/box'>Все сообщения</a></li>" +
-                    "<li><a href='/message'>Новое сообщение</a></li>" +
-                    "<li><a href='/logout'>Выход</a></li></ul>";
-
-        } else {
-            htmlText += "<ul><li><a href='/login.jsp'>Вход</a></li>" +
-            "<li><a href='/registration.jsp'>Регистрация</a></li></ul>";
-        }
-        return htmlText;
-    }
--->
 <div id="menu">
     <%=htmlText %>
 </div>

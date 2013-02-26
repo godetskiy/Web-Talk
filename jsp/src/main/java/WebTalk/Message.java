@@ -24,6 +24,11 @@ public class Message {
         this.setMessage(from, to, newSubject, newText, this.createDate());
     }
 
+    Message(int newID, int from, int to, String newSubject, String newText, String newDate) {
+        this.setMsg_id(newID);
+        this.setMessage(from, to, newSubject, newText, newDate);
+    }
+
     public void createNewMessage(int from, int to, String newSubject, String newText) {
         this.setMessage(from, to, newSubject, newText, this.createDate());
     }
@@ -70,7 +75,7 @@ public class Message {
 
     //Получение массива сообщений для заданного пользователя
     public static Message[] getMessagesArray(int usr_id) {
-        Message result[] = null;       //Результат
+        Message result[] = new Message[0];       //Результат
         int count = 0;              //Кол-во в результате
         Database db = new Database();
         ResultSet rs = null;        //Результат запроса
