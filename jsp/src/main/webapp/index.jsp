@@ -20,26 +20,18 @@
     String htmlText = "";
 %>
 <%
-    try {
-        HttpSession hs = request.getSession();
-        user = (User) hs.getAttribute("user");
+    HttpSession hs = request.getSession();
+    user = (User) hs.getAttribute("user");
 
-        if (user.isLogged()) {
-            //Если вход выполнен
-            htmlText = "<div>Привет, " + user.getName() + "</div><br><ul><li><a href='/box'>Все сообщения</a></li>" +
-                    "<li><a href='/message'>Новое сообщение</a></li>" +
-                    "<li><a href='/logout'>Выход</a></li></ul>";
-        } else {
-            htmlText = "<ul><li><a href='/login.jsp'>Вход</a></li>" +
-                    "<li><a href='/registration.jsp'>Регистрация</a></li></ul>";
-        }
-    } catch (NullPointerException e) {
+    if (user != null && user.isLogged()) {
+        //Если вход выполнен
+        htmlText = "<div>Привет, " + user.getName() + "</div><br><ul><li><a href='/box'>Все сообщения</a></li>" +
+                "<li><a href='/message'>Новое сообщение</a></li>" +
+                "<li><a href='/logout'>Выход</a></li></ul>";
+    } else {
         htmlText = "<ul><li><a href='/login.jsp'>Вход</a></li>" +
                 "<li><a href='/registration.jsp'>Регистрация</a></li></ul>";
-    } finally {
-
     }
-
 %>
 <div id="menu">
     <%=htmlText %>

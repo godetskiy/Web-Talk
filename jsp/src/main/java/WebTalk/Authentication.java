@@ -57,6 +57,12 @@ public class Authentication {
         String password = request.getParameter("password");
         String query_txt = "SELECT * FROM user WHERE username  = ? AND password = ?";
 
+        if (username == null || password == null) {
+            request.setAttribute("err", "Данные не введены");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+
         User tmpUser = Authentication.find(query_txt, username, password);
 
         if (tmpUser != null) {
@@ -85,6 +91,11 @@ public class Authentication {
         String password = request.getParameter("password");
         String query_txt = "SELECT * FROM user WHERE username  = ? AND name = ?";
 
+        if (username == null || name == null || password == null) {
+            request.setAttribute("err", "Данные не переданы");
+            request.getRequestDispatcher("registration.jsp").forward(request, response);
+            return;
+        }
         User tmpUser = Authentication.find(query_txt, username, name);
 
         if (tmpUser == null) {

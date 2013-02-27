@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.servlet.http.HttpSession;
+
 public class Box{
 
     private static ResultSet executeQuery(Connection con, String query_str, int usr_id) throws SQLException{
@@ -18,7 +18,7 @@ public class Box{
         return ps.executeQuery();
     }
 
-
+    //Создание массива писем
     public static void getMessagesArray(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Получение usr_id из сессии
         int usr_id = Authentication.fetchUserId(request);
@@ -68,6 +68,7 @@ public class Box{
         return;
     }
 
+    //Получение массива пользователей
     private static User[] getUsersArray() {
         Database db = new Database();
         ResultSet rs = null;            //Результат запроса
@@ -110,6 +111,7 @@ public class Box{
         return result;
     }
 
+    //Создание нового сообщения
     public static void createNewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("users", Box.getUsersArray());
 
@@ -136,6 +138,7 @@ public class Box{
         request.getRequestDispatcher("msg_form.jsp").forward(request, response);
     }
 
+    //Просмотр сообщения
     public static void viewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int msg_id = -1;
         int usr_id = Authentication.fetchUserId(request);
@@ -163,17 +166,23 @@ public class Box{
         request.getRequestDispatcher("msg_view.jsp").forward(request, response);
     }
 
+    //Отправка нового сообщения
     public static void send(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Отправка нового сообщения
         //Получение данных
         String subject = request.getParameter("subject");
         String text = request.getParameter("msg");
         int idFrom = -1;
         int idTo = -1;
-        HttpSession hs = request.getSession();
+
+        if (subject == null || text == null) {
+            //Если не инициализировались поля
+            request.setAttribute("err", "Ошибка передачи параметров");
+            request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+            return;
+        }
+
         try {
-            User tmpUser = (User) hs.getAttribute("user");
-            idFrom = tmpUser.getUsr_id();
+            idFrom = Authentication.fetchUserId(request);
             idTo = Integer.valueOf(request.getParameter("to"));
         } catch (NullPointerException e) {
             e.printStackTrace();
