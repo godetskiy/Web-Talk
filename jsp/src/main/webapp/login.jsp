@@ -10,6 +10,7 @@
 
     <script type="text/javascript">
         function validate(){
+            document.getElementById("error").innerHTML = "";
             document.getElementById("usr").innerHTML = "";
             document.getElementById("pwd").innerHTML = "";
             var usr = document.forms["form"]["username"].value;
@@ -35,7 +36,7 @@
         <table>
             <tr align="center"><td colspan="2">
                 <ul class="errorlist">
-                    <li>${err}</li>
+                    <li><span id = "error">${err}</span></li>
                     <li><span id = "usr"></span></li>
                     <li><span id = "pwd"></span></li>
                 </ul>

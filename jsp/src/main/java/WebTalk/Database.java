@@ -3,11 +3,6 @@ package WebTalk;
 import com.sun.corba.se.pept.transport.ConnectionCache;
 
 import java.sql.*;
-/**
- * User: alex
- * Date: 21.02.13
- * Time: 1:11
- */
 public class Database {
     public static final String JDBC_DRIVER = "org.h2.Driver";
     public static final String JDBC_URL = "jdbc:h2:tcp://localhost/test";
@@ -33,6 +28,12 @@ public class Database {
         }
         return true;
     }
+
+    public boolean closeConnection() throws SQLException {
+        if (connection != null)
+            connection.close();
+    }
+
 
     public boolean executeSQL(String sql){
         try {

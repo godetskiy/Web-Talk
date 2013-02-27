@@ -10,7 +10,7 @@ public class urls extends HttpServlet {
 
     private void manageUrls(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        //System.out.println(uri);
+        //System.out.println(request.getContextPath());
         switch (uri) {
             //Home page
             case "/login":
@@ -39,6 +39,7 @@ public class urls extends HttpServlet {
                 break;
         }
         return;
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

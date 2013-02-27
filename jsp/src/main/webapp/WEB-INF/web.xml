@@ -11,11 +11,14 @@
     <filter-mapping>
         <filter-name>UrlFilter</filter-name>
         <url-pattern>/</url-pattern>
+        <url-pattern>/login</url-pattern>
+        <url-pattern>/logout</url-pattern>
+        <url-pattern>/registration</url-pattern>
         <url-pattern>/box</url-pattern>
         <url-pattern>/message</url-pattern>
         <url-pattern>/send</url-pattern>
         <url-pattern>/view</url-pattern>
-    </filter-mapping>-->
+    </filter-mapping>  -->
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
@@ -28,37 +31,12 @@
 
     <servlet-mapping>
         <servlet-name>urls</servlet-name>
-        <url-pattern>/</url-pattern>
         <url-pattern>/login</url-pattern>
-        <url-pattern>/box</url-pattern>
-        <url-pattern>/message</url-pattern>
-        <url-pattern>/send</url-pattern>
-        <url-pattern>/view</url-pattern>
-    </servlet-mapping>
-
-    <!--<servlet-mapping>
-        <servlet-name>Login</servlet-name>
-        <url-pattern>/logged</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Registration</servlet-name>
-        <url-pattern>/registration</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MsgCreate</servlet-name>
+        <url-pattern>/registration</url-pattern>
+        <url-pattern>/box</url-pattern>
         <url-pattern>/message</url-pattern>
         <url-pattern>/send</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Box</servlet-name>
-        <url-pattern>/box</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>View</servlet-name>
         <url-pattern>/view</url-pattern>
-    </servlet-mapping> -->
+    </servlet-mapping>
 </web-app>

@@ -8,6 +8,7 @@
 
     <script type="text/javascript">
         function validate(){
+            document.getElementById("error").innerHTML = "";
             document.getElementById("toi").innerHTML = "";
             document.getElementById("sbj").innerHTML = "";
             document.getElementById("ms").innerHTML = "";
@@ -38,7 +39,7 @@
         <table>
             <tr align="center"><td colspan="2">
                 <ul class="errorlist">
-                    <li>${err}</li>
+                    <li><span id = "error">${err}</span></li>
                     <li><span id = "toi"></span></li>
                     <li><span id = "sbj"></span></li>
                     <li><span id = "ms"></span></li>

@@ -13,11 +13,14 @@
 <table border="1px solid black" width="100%">
     <tr><th>Дата</th><th>Информация</th><th>Тема</th></tr>
     <%!
-        Message message[] = null;
-        String htmlText = "";
-        int usr_id = -1;
+        Message message[];
+        String htmlText;
+        int usr_id;
     %>
     <%
+        message = null;
+        htmlText = "";
+        usr_id = -1;
         try {
             message = (Message[]) request.getAttribute("messages");
             HttpSession hs = request.getSession();

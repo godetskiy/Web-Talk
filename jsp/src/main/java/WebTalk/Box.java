@@ -39,7 +39,7 @@ public class Box{
             Connection con = db.getConnection();
             String query_txt_count = "SELECT count(*) AS count FROM message " +
                     "WHERE idfrom = ? OR idto = ?";
-            String query_txt = "SELECT * FROM message WHERE idfrom = ? OR idto = ?";
+            String query_txt = "SELECT * FROM message WHERE idfrom = ? OR idto = ? ORDER BY date";
             try {
                 //Подсчет кол-ва писем для заданного usr_id
                 ResultSet rs = Box.executeQuery(con, query_txt_count, usr_id);
@@ -109,16 +109,55 @@ public class Box{
 
     public static void createNewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("users", Box.getUsersArray());
-        request.setAttribute("sel_id", -1);
+
+        int sel_id = -1;
+        String subject = "";
+
+        try {
+            sel_id = Integer.valueOf(request.getParameter("sel_id"));
+            subject = request.getParameter("subject");
+        } catch (NullPointerException e) {
+            sel_id = -1;
+            subject = "";
+        } catch (NumberFormatException e) {
+
+        }
+
+        if (sel_id != -1) {
+            //Предзаполненое сообщение
+            subject = "RE: " + subject;
+        }
+
+        request.setAttribute("sel_id", sel_id);
+        request.setAttribute("subject", subject);
         request.getRequestDispatcher("msg_form.jsp").forward(request, response);
     }
 
     public static void viewMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Получение данных msg_id
+        int msg_id = -1;
+        int usr_id = Authentication.fetchUserId(request);
 
-        request.setAttribute("users", Box.getUsersArray());
-        //request.setAttribute("sel_id", sel_id);
-        request.getRequestDispatcher("msg_form.jsp").forward(request, response);
+        try {
+            msg_id = Integer.valueOf(request.getParameter("msg_id"));
+        } catch (NullPointerException e) {
+            request.setAttribute("err", "Ошибка передачи параметра");
+            request.getRequestDispatcher("box.jsp").forward(request, response);
+            return;
+        }
+
+        Message msg = Message.getMessageById(msg_id);
+        if (msg != null) {
+            request.setAttribute("to", User.getNameById(msg.getTo()));
+            request.setAttribute("subject", msg.getSubject());
+            request.setAttribute("text", msg.getText());
+            String action = "/message?sel_id=" + msg.getSender() + "&subject=" + msg.getSubject();
+            request.setAttribute("action", action);
+            if (msg.getSender() == usr_id)
+                request.setAttribute("type", "hidden");
+            else
+                request.setAttribute("type", "submit");
+        }
+        request.getRequestDispatcher("msg_view.jsp").forward(request, response);
     }
 
     public static void send(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

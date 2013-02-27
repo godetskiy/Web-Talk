@@ -10,7 +10,8 @@ public class UrlFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        HttpServletRequest request = (HttpServletRequest) req;
+        chain.doFilter(req, resp);
+        /*HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         boolean logged;
         try {
@@ -23,7 +24,7 @@ public class UrlFilter implements Filter {
 
         }
         response.sendRedirect("/");
-        return;
+        return;*/
     }
 
     public void init(FilterConfig config) throws ServletException {
