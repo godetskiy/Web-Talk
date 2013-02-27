@@ -4,21 +4,17 @@
            xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
-    <!--<filter>
+    <filter>
         <filter-name>UrlFilter</filter-name>
         <filter-class>WebTalk.UrlFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>UrlFilter</filter-name>
-        <url-pattern>/</url-pattern>
-        <url-pattern>/login</url-pattern>
-        <url-pattern>/logout</url-pattern>
-        <url-pattern>/registration</url-pattern>
         <url-pattern>/box</url-pattern>
         <url-pattern>/message</url-pattern>
         <url-pattern>/send</url-pattern>
         <url-pattern>/view</url-pattern>
-    </filter-mapping>  -->
+    </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
@@ -27,6 +23,7 @@
     <servlet>
         <servlet-name>urls</servlet-name>
         <servlet-class>WebTalk.urls</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

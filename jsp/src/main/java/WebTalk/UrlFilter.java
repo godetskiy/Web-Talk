@@ -10,21 +10,20 @@ public class UrlFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        chain.doFilter(req, resp);
-        /*HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
-        boolean logged;
-        try {
-            logged = Boolean.valueOf(request.getSession().getAttribute("logged").toString());
-            if (logged) {
-                chain.doFilter(req, resp);
-                return;
-            }
-        } catch (NullPointerException e) {
+        String uri = request.getRequestURI();
+        HttpSession hs = request.getSession();
+        User user = (User) hs.getAttribute("user");
 
+
+        if (user != null && user.isLogged()) {
+            chain.doFilter(req, resp);
+            return;
+        } else {
+            response.sendRedirect("/");
+            return;
         }
-        response.sendRedirect("/");
-        return;*/
     }
 
     public void init(FilterConfig config) throws ServletException {

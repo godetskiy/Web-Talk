@@ -1,5 +1,6 @@
 <%@ page import="WebTalk.Message" %>
 <%@ page import="WebTalk.User" %>
+<%@ page import="WebTalk.Authentication" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -23,13 +24,11 @@
         usr_id = -1;
         try {
             message = (Message[]) request.getAttribute("messages");
-            HttpSession hs = request.getSession();
-            User tmpUser = (User) hs.getAttribute("user");
-            usr_id = tmpUser.getUsr_id();
+            usr_id = Authentication.fetchUserId(request);
         } catch (NullPointerException e) {
           e.printStackTrace();
         }
-        if (message == null) {
+        if (message.length == 0) {
             //Если сообщений нет
             htmlText = "<tr style='text-align: center'><td colspan='3'>Сообщений нет</td></tr>";
         } else {

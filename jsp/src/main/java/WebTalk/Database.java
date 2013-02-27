@@ -10,11 +10,9 @@ public class Database {
     public static final String JDBC_PASSWORD = "";
 
     private Connection connection;
-    Statement st;
 
     Database() {
         connection = null;
-        st = null;
     }
 
     public boolean createConnection(){
@@ -29,37 +27,19 @@ public class Database {
         return true;
     }
 
-    public boolean closeConnection() throws SQLException {
-        if (connection != null)
-            connection.close();
-    }
-
-
-    public boolean executeSQL(String sql){
+    public boolean closeConnection() {
         try {
-            st = connection.createStatement();
-            st.execute(sql);
+            connection.close();
         } catch (SQLException e) {
+            return false;
+        } catch (NullPointerException e) {
             return false;
         }
         return true;
     }
 
-    public ResultSet executeQuery(String query){
-        ResultSet rs = null;
-        try {
-            st = connection.createStatement();
-            rs = st.executeQuery(query);
-        } catch (SQLException e) {
-            return null;
-        }
-        return rs;
-    }
-
-
-    protected void finalize () throws SQLException{
-        if (connection != null) connection.close();
-        if (st != null) st.close();
+    protected void finalize (){
+        this.closeConnection();
     }
 
     public Connection getConnection() {return connection;}

@@ -39,7 +39,7 @@ public class Box{
             Connection con = db.getConnection();
             String query_txt_count = "SELECT count(*) AS count FROM message " +
                     "WHERE idfrom = ? OR idto = ?";
-            String query_txt = "SELECT * FROM message WHERE idfrom = ? OR idto = ? ORDER BY date";
+            String query_txt = "SELECT * FROM message WHERE idfrom = ? OR idto = ? ORDER BY id_msg";
             try {
                 //Подсчет кол-ва писем для заданного usr_id
                 ResultSet rs = Box.executeQuery(con, query_txt_count, usr_id);
@@ -57,9 +57,10 @@ public class Box{
                     i++;
                 }
             } catch (SQLException e) {
-
+                e.printStackTrace();
+            } finally {
+                db.closeConnection();
             }
-            //Закрытие соединения с базой
         }
         //Переход в ящик писем
         request.setAttribute("messages", result);
@@ -74,7 +75,7 @@ public class Box{
         User[] result = new User[count];           //Возвращаемый результат
 
         if (!db.createConnection()) {
-
+            return result;
         } else {
             try {
                 Connection conn = db.getConnection();
@@ -100,9 +101,11 @@ public class Box{
                     i++;
                 }
             } catch (SQLException e) {
-
+                e.printStackTrace();
+                result = new User[count];
+            } finally {
+                db.closeConnection();
             }
-            //Закрытие базы данных
         }
         return result;
     }

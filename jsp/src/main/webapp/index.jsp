@@ -23,6 +23,7 @@
     try {
         HttpSession hs = request.getSession();
         user = (User) hs.getAttribute("user");
+
         if (user.isLogged()) {
             //Если вход выполнен
             htmlText = "<div>Привет, " + user.getName() + "</div><br><ul><li><a href='/box'>Все сообщения</a></li>" +

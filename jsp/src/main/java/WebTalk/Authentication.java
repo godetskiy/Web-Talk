@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Authentication {
+
+    //Получение usr_id из сессии
     public static int fetchUserId(HttpServletRequest request) {
         HttpSession hs = request.getSession();
         User tmpUser = (User) hs.getAttribute("user");
@@ -18,12 +20,11 @@ public class Authentication {
             else return -1;
     }
 
+    //Поиск пользователя по заданным параметрам
     private static User find(String query_str, String param1, String param2) {
         Database db = new Database();
         User result = null;
-        if (!db.createConnection()) {
-
-        } else {
+        if (db.createConnection()) {
             Connection con = db.getConnection();
             try {
                 PreparedStatement ps = con.prepareStatement(query_str);
@@ -36,13 +37,16 @@ public class Authentication {
                             rs.getString("NAME"));
                 }
             } catch (SQLException e) {
-
+                e.printStackTrace();
+            } finally {
+                //Закрытие соединения с базой
+                db.closeConnection();
             }
-            //Закрытие соединения с базой
         }
         return result;
     }
 
+    //Создание новой сессии пользователя
     private static void createUserSession(HttpServletRequest request, User user) {
         HttpSession hs = request.getSession(true);
         hs.setAttribute("user", user);
@@ -70,10 +74,10 @@ public class Authentication {
     public static void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession hs = request.getSession();
         hs.invalidate();
-        response.reset();
         response.sendRedirect("/");
         return;
     }
+
 
     public static void registration(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");

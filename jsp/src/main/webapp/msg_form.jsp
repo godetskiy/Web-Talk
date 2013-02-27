@@ -1,4 +1,5 @@
 <%@ page import="WebTalk.User"%>
+<%@ page import="WebTalk.Authentication" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -56,12 +57,13 @@
                         String htmlText = "";
                     %>
                     <%
+                        user = null;
+                        usr_id = -1;
+                        sel_id = -1;
+                        htmlText = "";
                         try {
                             user = (User[]) request.getAttribute("users");
-
-                            HttpSession hs = request.getSession();
-                            User tmpUser = (User) hs.getAttribute("user");
-                            usr_id = tmpUser.getUsr_id();
+                            usr_id = Authentication.fetchUserId(request);
 
                             sel_id = Integer.valueOf(request.getAttribute("sel_id").toString());
                         } catch (NullPointerException e) {

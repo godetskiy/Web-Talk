@@ -33,10 +33,6 @@ public class Message {
         this.setMessage(from, to, newSubject, newText, newDate);
     }
 
-    /*public void createNewMessage(int from, int to, String newSubject, String newText) {
-        this.setMessage(from, to, newSubject, newText, this.createDate());
-    } */
-
     public static String createTableSQL() {
         return  //"drop table if exists message; " +
                 "create table message(" +
@@ -61,26 +57,29 @@ public class Message {
     public boolean save() {
         Database db = new Database();
         boolean result = false;
-        if (!db.createConnection()) {
-            result = false;
-        } else {
-            Connection conn = db.getConnection();
-            String sql_str = "INSERT INTO message(idfrom, idto, subject, text, date) " +
-                    "VALUES (?, ?, ?, ?, ?)";
-            try {
-                PreparedStatement ps = conn.prepareStatement(sql_str);
-                ps.setInt(1, idFrom);
-                ps.setInt(2, idTo);
-                ps.setString(3, subject);
-                ps.setString(4, text);
-                ps.setString(5, date);
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                result = false;
-            }
-            result = true;
+
+        if (!db.createConnection())
+            return result;
+
+        Connection conn = db.getConnection();
+        String sql_str = "INSERT INTO message(idfrom, idto, subject, text, date) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql_str);
+            ps.setInt(1, idFrom);
+            ps.setInt(2, idTo);
+            ps.setString(3, subject);
+            ps.setString(4, text);
+            ps.setString(5, date);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            //Закрытие соединения с БД
+            db.closeConnection();
         }
+
+        result = true;
         return result;
     }
 
@@ -88,58 +87,31 @@ public class Message {
     public static Message getMessageById(int msg_id){
         Database db = new Database();
         Message newMessage = null;
+
         if (!db.createConnection())
-            return null;
-        String query_txt = "SELECT * FROM MESSAGE WHERE ID_MSG = " + msg_id + ";";
-        ResultSet rs = db.executeQuery(query_txt);
+            return newMessage;
+
+        String query_txt = "SELECT * FROM MESSAGE WHERE ID_MSG = ?";
+        Connection conn = db.getConnection();
         try {
-            rs.next();
-            newMessage = new Message();
-            newMessage.setMessage(rs.getInt("IDFROM"), rs.getInt("IDTO"), rs.getString("SUBJECT"),
-                    rs.getString("TEXT"), rs.getString("DATE"));
+            PreparedStatement ps = conn.prepareStatement(query_txt);
+            ps.setInt(1, msg_id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                newMessage = new Message();
+                newMessage.setMessage(rs.getInt("IDFROM"), rs.getInt("IDTO"), rs.getString("SUBJECT"),
+                        rs.getString("TEXT"), rs.getString("DATE"));
+            }
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
+            return newMessage;
+        } finally {
+            db.closeConnection();
         }
+
         return newMessage;
     }
-
-   /* //Получение массива сообщений для заданного пользователя
-    public static Message[] getMessagesArray(int usr_id) {
-        Message result[] = new Message[0];       //Результат
-        int count = 0;              //Кол-во в результате
-        Database db = new Database();
-        ResultSet rs = null;        //Результат запроса
-        if (!db.createConnection())
-            return null;
-
-        try {
-            //Подсчет кол-ва записей
-            String query = "SELECT COUNT(*) AS COUNT FROM MESSAGE " +
-                    "WHERE IDFROM = " + usr_id + " OR IDTO = " + usr_id;
-            rs = db.executeQuery(query);
-            if (rs != null) {
-                //Запрос выполнился
-                rs.next();
-                count = rs.getInt("COUNT");
-                result = new Message[count];
-            } else {
-                return null;
-            }
-
-            query = "SELECT * FROM MESSAGE WHERE IDFROM = " + usr_id + " OR IDTO = " + usr_id + "" +
-                    " ORDER BY DATE DESC";
-            rs = db.executeQuery(query);
-            for (int i = 0; rs.next(); i++) {
-                result[i] = new Message();
-                result[i].setMessage(rs.getInt("IDFROM"), rs.getInt("IDTO"), rs.getString("SUBJECT"),
-                        rs.getString("TEXT"), rs.getString("DATE"));
-                result[i].setMsg_id(rs.getInt("ID_MSG"));
-            }
-        } catch (SQLException e) {
-            return null;
-        }
-        return result;
-    } */
 
     private String createDate() {
         return (new SimpleDateFormat()).format(new Date());
